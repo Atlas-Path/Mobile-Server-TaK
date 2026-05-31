@@ -66,7 +66,7 @@ CLIENT_CNS="${CLIENT_CNS:-user admin}"
 
 # Database connection password to write into CoreConfig.xml. Empty by default
 # (local dev DB typically uses trust auth). Set DB_PASSWORD to override.
-DB_PASSWORD="${DB_PASSWORD:-}"
+DB_PASSWORD="MobileServer2026"
 
 # ---------------------------------------------------------------------------
 # Argument parsing
