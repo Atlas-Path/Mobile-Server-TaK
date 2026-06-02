@@ -123,9 +123,10 @@ if [ -z "${SCHEMA_JAR:-}" ] || [ ! -f "$SCHEMA_JAR" ]; then
   exit 1
 fi
 log "Applying schema with $(basename "$SCHEMA_JAR")..."
-java -jar "$SCHEMA_JAR" upgrade \
+java -jar "$SCHEMA_JAR" \
   -url "jdbc:postgresql://127.0.0.1:5432/${DB_NAME}" \
   -user "${DB_USER}" \
-  -password "${DB_PASS}"
+  -password "${DB_PASS}" \
+  upgrade
 
 log "Done. Database '${DB_NAME}' is ready (role '${DB_USER}', schema applied)."
