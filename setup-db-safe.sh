@@ -98,9 +98,13 @@ log "PostgreSQL is accepting connections."
 # run psql from a neutral dir so the 'postgres' user doesn't warn on /home perms
 cd /tmp
 
-# --- 3. create martiuser if missing --------------------------------------------
+# --- 3. create martiuser if missing, and ALWAYS sync its password ---------------
+# The password is synced on every run (not just creation) so a role left over from
+# an earlier run with a stale/default password is repaired to match CoreConfig.xml.
 if [ "$(sudo -u postgres psql -AtqXc "SELECT 1 FROM pg_roles WHERE rolname='${DB_USER}'")" = "1" ]; then
-  log "Role '${DB_USER}' already exists — skipping creation."
+  log "Role '${DB_USER}' already exists — syncing password to CoreConfig.xml."
+  sudo -u postgres psql -v ON_ERROR_STOP=1 -c \
+    "ALTER ROLE ${DB_USER} WITH LOGIN ENCRYPTED PASSWORD '${DB_PASS}';"
 else
   log "Creating role '${DB_USER}'..."
   sudo -u postgres psql -v ON_ERROR_STOP=1 -c \
