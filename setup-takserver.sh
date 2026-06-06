@@ -352,6 +352,9 @@ TAK Server bring-up complete.
   Admin UI:       https://${SAN_DNS%% *}:8443/   (also any SAN: $SAN_DNS / $SAN_IP)
   Admin cert:     $CERTS/files/admin.p12   (password: $CAPASS)
                   import into your browser/keychain to access :8443
+  Copy cert -> PC: run this ON THE OTHER computer to pull the admin cert:
+                  scp $(whoami)@${SAN_IP%% *}:$CERTS/files/admin.p12 .
+                  (then import admin.p12 — password: $CAPASS)
   Add a client:   (cd $EX && java -jar "$UM" usermod -p '<password>' <username>)
   Stop / start:   (cd $EX && ./stop-tak.sh) ; (cd $EX && ./start-tak.sh)
   Logs:           $EX/logs/takserver-{messaging,config,api}.log
