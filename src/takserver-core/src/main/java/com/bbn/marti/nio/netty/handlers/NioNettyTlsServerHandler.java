@@ -395,6 +395,7 @@ public class NioNettyTlsServerHandler extends NioNettyHandlerBase {
 				// parse and broadcast the message
 				TakMessage takMessage = TakMessage.parseFrom(eventBytes);
 				CotEventContainer cotEventContainer = StreamingProtoBufHelper.proto2cot(takMessage);
+				log.info("Inbound CoT parse path=NioNettyTlsServerHandler protobuf CoT after parse: " + cotEventContainer.asXml());
 				
 				if (isNotDOSLimited(cotEventContainer)  && isNotReadLimited(cotEventContainer)) {
 					

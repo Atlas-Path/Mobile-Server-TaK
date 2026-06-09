@@ -140,6 +140,7 @@ public class StreamingProtoBufProtocol extends AbstractBroadcastingProtocol<CotE
                 // parse and broadcast the message
                 TakMessage takMessage = TakMessage.parseFrom(eventBytes);
                 CotEventContainer cotEventContainer = StreamingProtoBufHelper.proto2cot(takMessage);
+                log.info("Inbound CoT parse path=StreamingProtoBufProtocol protobuf CoT after parse: " + cotEventContainer.asXml());
                 super.broadcastDataReceived(cotEventContainer, handler);
 
                 // reset parser state

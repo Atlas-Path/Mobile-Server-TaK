@@ -133,11 +133,13 @@ public class SingleProtobufOrCotProtocol extends AbstractBroadcastingProtocol<Co
                 // parse the protobuf
                 Takmessage.TakMessage takMessage = Takmessage.TakMessage.parseFrom(eventBytes);
                 cotEventContainer = StreamingProtoBufHelper.proto2cot(takMessage);
+                log.info("Inbound CoT parse path=SingleProtobufOrCotProtocol protobuf CoT after parse: " + cotEventContainer.asXml());
 
             } else if (firstByte == 0x3C) {
 
                 StringBuilder cotBuilder = new StringBuilder("<");
                 cotBuilder.append(charset.decode(buffer).toString());
+                log.info("Inbound CoT parse path=SingleProtobufOrCotProtocol raw CoT before parse: " + cotBuilder);
 
                 // parse the cot
                 Document doc = cotParser.parse(cotBuilder.toString());

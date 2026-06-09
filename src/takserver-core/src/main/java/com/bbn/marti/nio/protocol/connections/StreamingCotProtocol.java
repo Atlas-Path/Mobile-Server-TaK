@@ -236,6 +236,8 @@ public class StreamingCotProtocol extends AbstractBroadcastingProtocol<CotEventC
 				try {
 
 					// try to parse this message
+					log.info("Inbound CoT parse path=StreamingCotProtocol raw CoT before parse: " + msg);
+
 					if (log.isTraceEnabled()) {
 						log.trace("possible message: " + msg);
 					}
