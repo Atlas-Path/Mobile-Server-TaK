@@ -10,30 +10,39 @@
 #==============================================================================
 set -euo pipefail
 
-#--------------------------- CONFIG (edit for your host) ----------------------
-CAPASS="atakatak"               # CA + every keystore password
-DB_NAME="cot"
-DB_USER="martiuser"
-DB_PASS="atakatak"              # stored in CoreConfig.xml; must match the role's password
+SRV="$(cd "$(dirname "$0")" && pwd)"
+LOCAL_ENV="${TAKSERVER_LOCAL_ENV:-$SRV/.takserver-local.env}"
+if [ -f "$LOCAL_ENV" ]; then
+  set -a
+  # shellcheck disable=SC1090
+  . "$LOCAL_ENV"
+  set +a
+fi
 
-CERT_STATE="NY"                 # required by cert-metadata.sh
-CERT_CITY="NYC"
-CERT_OU="TAK"
-CA_NAME="TAKServer"             # CA common name (also CoreConfig certificateSigning CA=)
-SERVER_CN="takserver"           # server cert common name
-ADMIN_CN="admin"                # admin client cert common name
+#--------------------------- CONFIG (edit for your host) ----------------------
+CAPASS="${CAPASS:-atakatak}"               # CA + every keystore password
+DB_NAME="${DB_NAME:-cot}"
+DB_USER="${DB_USER:-martiuser}"
+DB_PASS="${DB_PASS:-atakatak}"             # stored in CoreConfig.xml; must match the role's password
+
+CERT_STATE="${CERT_STATE:-NY}"             # required by cert-metadata.sh
+CERT_CITY="${CERT_CITY:-NYC}"
+CERT_OU="${CERT_OU:-TAK}"
+CA_NAME="${CA_NAME:-TAKServer}"            # CA common name (also CoreConfig certificateSigning CA=)
+SERVER_CN="${SERVER_CN:-takserver}"        # server cert common name
+ADMIN_CN="${ADMIN_CN:-admin}"              # admin client cert common name
 
 # SANs for the server cert — every hostname / IP a client may use to reach this box.
-# If your host differs from pi-dev / 192.168.100.73, change these.
-SAN_DNS="takserver pi-dev localhost"
-SAN_IP="192.168.100.73 127.0.0.1"
+# Put machine-specific values in .takserver-local.env so they do not get committed.
+SAN_DNS="${SAN_DNS:-takserver localhost}"
+SAN_IP="${SAN_IP:-127.0.0.1}"
 
 # JVM heap sizes (MB) — tuned for a 4GB Pi (≈2.3GB total).
-HEAP_MESSAGING=1024
-HEAP_CONFIG=512
-HEAP_API=768
+HEAP_MESSAGING="${HEAP_MESSAGING:-1024}"
+HEAP_CONFIG="${HEAP_CONFIG:-512}"
+HEAP_API="${HEAP_API:-768}"
 
-DO_START=1                      # 1 = launch the server at the end; 0 = configure only
+DO_START="${DO_START:-1}"                  # 1 = launch the server at the end; 0 = configure only
 #------------------------------------------------------------------------------
 
 log()  { printf '\n\033[1;36m== %s ==\033[0m\n' "$*"; }
@@ -42,7 +51,6 @@ warn() { printf '\033[1;33m   ! %s\033[0m\n' "$*"; }
 die()  { printf '\033[1;31mERROR: %s\033[0m\n' "$*" >&2; exit 1; }
 trap 'die "failed at line $LINENO"' ERR
 
-SRV="$(cd "$(dirname "$0")" && pwd)"
 CORE="$SRV/src/takserver-core"
 EX="$CORE/example"
 CERTS="$CORE/scripts/certs"

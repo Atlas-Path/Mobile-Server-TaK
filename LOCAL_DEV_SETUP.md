@@ -22,7 +22,7 @@ Everything uses the password **`atakatak`** (CA, all keystores, the DB user). Th
 | JDK | Temurin **17** (`java -version` → 17.0.18) | TAK 5.7 builds and runs on 17. |
 | PostgreSQL | **15** (with PostGIS) | Locally installed, not docker. This is the source of the biggest README divergence (see §2). |
 | Gradle | bundled wrapper | Used once to build the WAR + helper jars. |
-| Host | `pi-dev`, LAN IP `192.168.100.73` | A Raspberry Pi (4 GB). Heap sizes in §5 are tuned for that. |
+| Host | `pi-dev`, LAN IP from `.takserver-local.env` | A Raspberry Pi (4 GB). Heap sizes in §5 are tuned for that. |
 
 ---
 
@@ -117,11 +117,17 @@ IP), and an admin client cert:
 
 #### Server cert SAN
 
-`takserver.jks` was regenerated with a SAN covering every name/IP a client might use:
+`takserver.jks` was regenerated with a SAN covering every name/IP a client might use.
+Machine-specific SAN values live in `.takserver-local.env`, which is ignored by git:
+
+```bash
+SAN_DNS="takserver pi-dev localhost"
+SAN_IP="<pi-lan-ip> 127.0.0.1"
+```
 
 ```
 DNS: takserver, pi-dev, localhost
-IP:  192.168.100.73, 127.0.0.1
+IP:  value from `.takserver-local.env`, plus `127.0.0.1`
 ```
 
 If your new host has a different hostname/IP, regenerate the server cert with the right
@@ -275,7 +281,7 @@ end-to-end on the Mac.
    `cacheCreds0=Cache credentials`.
    (A working enrollment-only bundle for this host is at
    `~/Desktop/atak-bundles/enroll-pi.zip`.)
-2. In ATAK: Address `192.168.100.73`, Port `8089` (Advanced Options), SSL/TLS, Use
+2. In ATAK: Address `<pi-lan-ip>`, Port `8089` (Advanced Options), SSL/TLS, Use
    Authentication ON, Enroll for Client Certificate ON.
 3. Enter username + password → phone enrolls via `:8446`, gets a server-issued cert, joins
    on `:8089` over mTLS.
